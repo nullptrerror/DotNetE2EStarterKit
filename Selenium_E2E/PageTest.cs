@@ -18,10 +18,21 @@ public class PageTest
     public async Task BaseSetup()
     {
         Playwright = await PlaywrightClass.CreateAsync();
-        Browser = await Playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
-        Context = await Browser.NewContextAsync();
+        Browser = await Playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
+
+        // Define your custom user-agent string
+        string customUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
+
+        // Set the user-agent in the context
+        var contextOptions = new BrowserNewContextOptions
+        {
+            UserAgent = customUserAgent
+        };
+        Context = await Browser.NewContextAsync(contextOptions);
+
         Page = await Context.NewPageAsync();
     }
+
 
     [TearDown]
     public async Task BaseTearDown()

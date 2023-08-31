@@ -1,16 +1,24 @@
-﻿// using NUnit.Framework;
-// 
-// namespace Selenium_E2E.TestSuitScenarios
-// {
-//     public partial class ScenarioTestSuit : BaseTestPlan
-//     {
-//         [Test]
-//         public void Scenario1_GoogleSearch()
-//         {
-//             // Go to StartingChromeUrl
-//             driver.Navigate().GoToUrl(configuration.StartingChromeUrl);
-//             // Wait for 10 seconds
-//             Thread.Sleep(10000);
-//         }
-//     }
-// }
+﻿using NUnit.Framework;
+
+namespace Selenium_E2E.TestSuitScenarios
+{
+    [Parallelizable(ParallelScope.Self)]
+    [TestFixture]
+    public partial class Tests : PageTest
+    {
+        [Test]
+        public async Task Scenario1_GoogleSearch()
+        {
+            await Page.GotoAsync("https://www.google.com/");
+
+            await Page.GetByLabel("Search", new() { Exact = true }).ClickAsync();
+
+            await Page.GetByLabel("Search", new() { Exact = true }).FillAsync("Texas");
+
+            await Page.GetByText("Texas", new() { Exact = true }).ClickAsync();
+
+            // Wait ten seconds
+            await Page.WaitForTimeoutAsync(10000);
+        }
+    }
+}
