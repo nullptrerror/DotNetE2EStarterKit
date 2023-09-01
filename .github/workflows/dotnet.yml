@@ -4,8 +4,6 @@
 name: .NET 6.x.x
 
 on:
-  push:
-    branches: [ "development", "production" ]
   pull_request:
     branches: [ "development", "production" ]
 
@@ -15,14 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
     - name: Setup .NET 6.x.x
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.x.x
-    - name: Restore dependencies
+        dotnet-version: '6.x.x'
+
+    - name: Install dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+
+    - name: Install Playwright CLI
+      run: dotnet tool install --global Microsoft.Playwright.CLI
+
+    - name: Install Playwright Browsers
+      run: playwright install
+
+    - name: Run tests
+      run: dotnet test --no-build
