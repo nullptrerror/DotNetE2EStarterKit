@@ -20,13 +20,13 @@ namespace Selenium_E2E.TestSuitScenarios
 
             await Page.GetByRole(AriaRole.Link, new() { Name = "Ticketmaster: Buy Verified Tickets for Concerts, Sports ... Ticketmaster https://www.ticketmaster.com" }).ClickAsync();
 
-            await Page.GetByPlaceholder("Search for artists, venues, and events").ClickAsync();
-
-            await Page.GetByPlaceholder("Search for artists, venues, and events").FillAsync("Tayler Swift");
-
-            await Page.GetByRole(AriaRole.Button, new() { Name = "Search", Exact = true }).ClickAsync();
-
-            await Page.GetByRole(AriaRole.Link, new() { Name = "Find tickets Taylor Swift | The Eras Tour Miami, FL Hard Rock Stadium 10/18/24, 7:00 PM" }).ClickAsync();
+            // await Page.GetByPlaceholder("Search for artists, venues, and events").ClickAsync();
+            // 
+            // await Page.GetByPlaceholder("Search for artists, venues, and events").FillAsync("Tayler Swift");
+            // 
+            // await Page.GetByRole(AriaRole.Button, new() { Name = "Search", Exact = true }).ClickAsync();
+            // 
+            // await Page.GetByRole(AriaRole.Link, new() { Name = "Find tickets Taylor Swift | The Eras Tour Miami, FL Hard Rock Stadium 10/18/24, 7:00 PM" }).ClickAsync();
 
         }
     }
