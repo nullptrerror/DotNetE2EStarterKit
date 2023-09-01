@@ -36,8 +36,5 @@ jobs:
     - name: Install Playwright Browsers
       run: playwright install
 
-    - name: Install xvfb
-      run: sudo apt-get install -y xvfb
-
     - name: Run tests with xvfb
-      run: xvfb-run -- dotnet test --no-build
+      run: dotnet test --no-build
