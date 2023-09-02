@@ -16,25 +16,25 @@ jobs:
       HEADLESS: 'true'
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2  # This step checks out your repository's code
+    - name: Checkout
+      uses: actions/checkout@v3.6.0
 
-    - name: Setup .NET 6.x.x
-      uses: actions/setup-dotnet@v3
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3.2.0
       with:
         dotnet-version: '6.x.x'
 
-    - name: Install dependencies
+    - name: "[run] dotnet restore"
       run: dotnet restore
 
-    - name: Build
+    - name: "[run] dotnet build --no-restore"
       run: dotnet build --no-restore
 
-    - name: Install Playwright CLI
+    - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
       run: dotnet tool install --global Microsoft.Playwright.CLI
 
-    - name: Install Playwright Browsers
+    - name: "[run] playwright install"
       run: playwright install
 
-    - name: Run tests with xvfb
+    - name: "[run] dotnet test --no-build"
       run: dotnet test --no-build
