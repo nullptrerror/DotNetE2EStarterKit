@@ -1,4 +1,4 @@
-﻿namespace Selenium_E2E.Settings
+﻿namespace NUnit_E2E.Settings
 {
     public class Users
     {

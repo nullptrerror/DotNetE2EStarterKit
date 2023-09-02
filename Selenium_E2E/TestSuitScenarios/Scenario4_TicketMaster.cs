@@ -1,8 +1,7 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
-using System.Text.RegularExpressions;
 
-namespace Selenium_E2E.TestSuitScenarios
+namespace NUnit_E2E.TestSuitScenarios
 {
     [TestFixture]
     public partial class Tests : PageTest
