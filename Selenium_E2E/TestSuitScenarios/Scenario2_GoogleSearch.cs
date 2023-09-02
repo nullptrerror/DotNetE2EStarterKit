@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Selenium_E2E.TestSuitScenarios
+namespace NUnit_E2E.TestSuitScenarios
 {
     [TestFixture]
     public partial class Tests : PageTest

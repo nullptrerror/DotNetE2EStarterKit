@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
-using Selenium_E2E.Settings;
+using NUnit_E2E.Settings;
 
-namespace Selenium_E2E.Helpers
+namespace NUnit_E2E.Helpers
 {
     public static class ConfigurationHelper
     {

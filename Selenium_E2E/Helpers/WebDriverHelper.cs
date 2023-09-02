@@ -4,7 +4,7 @@ using WebDriverManager;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager.Helpers;
 
-namespace Selenium_E2E.Helpers
+namespace NUnit_E2E.Helpers
 {
     public static class WebDriverHelper
     {
