@@ -57,6 +57,10 @@ jobs:
     - name: "[run] dotnet test --no-build"
       run: dotnet test --no-build
 
+    - name: List root directory contents
+      run: |
+        ls -al /
+
     - name: Upload Playwright Videos
       uses: actions/upload-artifact@v2
       with:
