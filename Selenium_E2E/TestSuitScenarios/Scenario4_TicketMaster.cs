@@ -19,6 +19,9 @@ namespace NUnit_E2E.TestSuitScenarios
 
             await Page.GetByRole(AriaRole.Link, new() { Name = "Ticketmaster: Buy Verified Tickets for Concerts, Sports ... Ticketmaster https://www.ticketmaster.com" }).ClickAsync();
 
+            // Wait five seconds
+            await Task.Delay(13000);
+
             // await Page.GetByPlaceholder("Search for artists, venues, and events").ClickAsync();
             // 
             // await Page.GetByPlaceholder("Search for artists, venues, and events").FillAsync("Tayler Swift");
