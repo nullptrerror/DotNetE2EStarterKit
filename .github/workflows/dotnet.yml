@@ -56,3 +56,9 @@ jobs:
 
     - name: "[run] dotnet test --no-build"
       run: dotnet test --no-build
+
+    - name: Upload Playwright Videos
+      uses: actions/upload-artifact@v2
+      with:
+        name: playwright-videos
+        path: ./videos/
