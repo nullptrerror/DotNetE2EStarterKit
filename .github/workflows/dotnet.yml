@@ -1,0 +1,58 @@
+name: .NET 6.x.x
+
+on:
+  pull_request:
+    branches: [ "development", "production" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      HEADLESS: 'true'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3.6.0
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3.2.0
+      with:
+        dotnet-version: '6.x.x'
+
+    - name: "[run] dotnet restore"
+      run: dotnet restore
+
+    - name: "[run] dotnet build --no-restore"
+      run: dotnet build --no-restore
+
+  test:
+    needs: build  # This ensures that the test job will only run after the build job completes successfully
+    runs-on: ubuntu-latest
+
+    env:
+      HEADLESS: 'true'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3.6.0
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3.2.0
+      with:
+        dotnet-version: '6.x.x'
+
+    - name: "[run] dotnet restore"
+      run: dotnet restore
+
+    - name: "[run] dotnet build --no-restore"
+      run: dotnet build --no-restore
+
+    - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
+      run: dotnet tool install --global Microsoft.Playwright.CLI
+
+    - name: "[run] playwright install"
+      run: playwright install
+
+    - name: "[run] dotnet test --no-build"
+      run: dotnet test --no-build
