@@ -1,11 +1,14 @@
-﻿using NUnit.Framework;
+﻿using NUnit.Allure.Attributes;
+using NUnit.Framework;
+
 
 namespace NUnit_E2E.TestSuitScenarios
 {
-    [TestFixture]
     public partial class Tests : PageTest
     {
         [Test]
+        [AllureSubSuite(nameof(Scenario2_GoogleSearch))]
+        [AllureTag(nameof(Scenario2_GoogleSearch))]
         public async Task Scenario2_GoogleSearch()
         {
             await Page.GotoAsync("https://www.google.com/");
@@ -15,9 +18,6 @@ namespace NUnit_E2E.TestSuitScenarios
             await Page.GetByLabel("Search", new() { Exact = true }).FillAsync("Florida");
 
             await Page.GetByText("Florida", new() { Exact = true }).ClickAsync();
-
-            // Wait ten seconds
-            await Page.WaitForTimeoutAsync(5000);
         }
     }
 }
