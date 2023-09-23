@@ -15,28 +15,32 @@ public class PageTest
     internal IBrowserContext Context { get; set; } = null!;
     internal IPage Page { get; set; } = null!;
     internal TestAppSettings configuration = null!;
-    internal string currentVideoDir {
-        get {
+    internal string currentVideoDir
+    {
+        get
+        {
             // Get the current executing directory
             string executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new Exception("Could not get executing directory");
-        
-            // Build the video directory path relative to the executing directory
-            string videoDirectory = Path.Combine(executingDirectory, $"videos\\{TestContext.CurrentContext.Test.MethodName}\\");
-        
+
+            // Build the video directory path relative to the executing directory using the appropriate directory separator
+            string videoDirectory = Path.Combine(executingDirectory, $"videos{Path.DirectorySeparatorChar}{TestContext.CurrentContext.Test.MethodName}{Path.DirectorySeparatorChar}");
+
             return videoDirectory;
         }
     }
+
 
     [SetUp]
     public async Task BaseSetup()
     {
         Playwright = await MicrosoftPlaywrightPlaywright.CreateAsync();
         Browser = await Playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = Headless });
-        Context = await Browser.NewContextAsync(new BrowserNewContextOptions { 
+        Context = await Browser.NewContextAsync(new BrowserNewContextOptions
+        {
             UserAgent = UserAgent,
             RecordVideoDir = currentVideoDir,
             RecordVideoSize = new RecordVideoSize { Width = 1280, Height = 720 }
-         });
+        });
         Page = await Context.NewPageAsync();
     }
 
