@@ -67,4 +67,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: playwright-videos
-        path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/Selenium_E2E/bin/Debug/net6.0/
+        path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/Selenium_E2E/bin/Debug/net6.0/videos/
