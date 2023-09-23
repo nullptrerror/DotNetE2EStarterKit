@@ -90,7 +90,7 @@ public class PageTest
         try
         {
             //  verify theres no other loading activity
-            await Page.WaitForLoadStateAsync(LoadState.Load);
+            // await Page.WaitForLoadStateAsync(LoadState.Load);
             await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
