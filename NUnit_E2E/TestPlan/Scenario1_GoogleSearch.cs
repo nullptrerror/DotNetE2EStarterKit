@@ -2,9 +2,9 @@
 using NUnit.Framework;
 using System.Collections;
 
-namespace NUnit_E2E.TestSuitScenarios
+namespace NUnit_E2E.TestPlan
 {
-    public partial class Tests : PageTest
+    public partial class Scenario1 : PageTest
     {
         internal static IEnumerable TestCasesSearches
         {
@@ -19,7 +19,7 @@ namespace NUnit_E2E.TestSuitScenarios
         [Test]
         [AllureSubSuite(nameof(Scenario1_GoogleSearch))]
         [AllureTag(nameof(Scenario1_GoogleSearch))]
-        [TestCaseSource(typeof(Tests), nameof(TestCasesSearches))]
+        [TestCaseSource(typeof(Scenario1), nameof(TestCasesSearches))]
         public async Task<string> Scenario1_GoogleSearch(string q)
         {
             await Page.GotoAsync("https://www.google.com/");

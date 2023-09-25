@@ -5,6 +5,7 @@ using System.Reflection;
 using Allure.Net.Commons;
 using NUnit.Allure.Attributes;
 using NUnit.Allure.Core;
+using NUnit_E2E.Helpers;
 
 namespace NUnit_E2E;
 
@@ -15,6 +16,14 @@ namespace NUnit_E2E;
 [AllureParentSuite(AllureSuite)]
 public class PageTest
 {
+    /// <summary>
+    /// <inheritdoc cref="System.Reflection.Assembly"/>
+    /// <br/>
+    /// <inheritdoc cref="Assembly.GetExecutingAssembly"/>
+    /// </summary>
+    /// <inheritdoc cref="System.Reflection.Assembly"/>
+    /// <inheritdoc cref="Assembly.GetExecutingAssembly"/>
+    internal static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
     /// <summary>
     /// The name of the root suite
     /// </summary>
@@ -66,11 +75,28 @@ public class PageTest
             /// <summary>
             /// The template for the trace file name
             /// </summary>
-            internal const string TraceFileTypeTemplate = "{0}.zip";
+            internal const string TraceFileTypeTemplate = "{0}{1}{2}.zip";
             /// <summary>
-            /// The options to use when waiting for the page to load during teardown
+            /// The error message template for when the page cannot be closed
             /// </summary>
-            internal static readonly PageWaitForLoadStateOptions TeardownPageWaitForLoadStateOptions = new() { Timeout = 5000 };
+            internal const string WaitForLoadStateErrorMessageTemplate = "Error waiting for load state: {0}";
+            /// <summary>
+            /// The page wait for load state options
+            /// <br/>
+            /// <inheritdoc cref="PageWaitForLoadStateOptions.Timeout"/>
+            /// </summary>
+            /// <inheritdoc cref="PageWaitForLoadStateOptions.Timeout"/>
+            internal static readonly PageWaitForLoadStateOptions TeardownPageWaitForLoadStateOptions = new PageWaitForLoadStateOptions() { 
+                Timeout = 5000
+            };
+            /// <summary>
+            /// <inheritdoc cref="Assembly.Location"/>
+            /// <br/>
+            /// <inheritdoc cref="Path.GetDirectoryName(string)"/>
+            /// </summary>
+            /// <inheritdoc cref="Assembly.Location"/>
+            /// <inheritdoc cref="Path.GetDirectoryName(string)"/>
+            internal static readonly string? GetExecutingAssemblyDirectoryName = Path.GetDirectoryName(Assembly.Location);
             /// <summary>
             /// The user agent to use for the browser
             /// </summary>
@@ -79,22 +105,80 @@ public class PageTest
             /// The tracing type
             /// </summary>
             internal const string TracingType = "application/zip";
+            /// <summary>
+            /// <inheritdoc cref="BrowserTypeLaunchOptions.Args"/>
+            /// </summary>
+            /// <inheritdoc cref="BrowserTypeLaunchOptions.Args"/>
+            internal static readonly IEnumerable<string>? BrowserTypeLaunchOptionsArgs = new[] {
+                // "--start-maximized",           // Maximize the browser window
+                WindowHelper.WindowSizeCommand,
+                // "--window-size=1920,1080",           // Maximize the browser window
+                // "--start-in-incognito",        // Start browser in incognito mode
+                // "--force-dark-mode",           // Force dark mode
+                // "--enable-features=WebUIDarkMode"  // Enable dark mode feature
+            };
+            /// <summary>
+            /// The browser type launch options
+            /// </summary>
+            internal static readonly BrowserTypeLaunchOptions BrowserTypeLaunchOptions = new BrowserTypeLaunchOptions()
+            {
+                Headless = Headless,
+                Devtools = DevTools,
+                Args = BrowserTypeLaunchOptionsArgs,
+                DownloadsPath = Path.Combine(GetExecutingAssemblyDirectoryName ?? throw new ArgumentNullException(nameof(GetExecutingAssemblyDirectoryName)), AssetsDir),
+                TracesDir = Path.Combine(GetExecutingAssemblyDirectoryName ?? throw new ArgumentNullException(nameof(GetExecutingAssemblyDirectoryName)), AssetsDir),
+                // SlowMo = 100,
+                // Timeout = 10000,
+            };
+            /// <summary>
+            /// The record video size
+            /// </summary>
+            internal static RecordVideoSize RecordVideoSize {
+                get
+                {
+                    var recordVideoSize = new RecordVideoSize()
+                    {
+                        Width = WindowHelper.CurrentHorizontalResolution,
+                        Height = WindowHelper.CurrentVerticalResolution
+                    };
+
+                    return recordVideoSize;
+                }
+            }
+            /// <summary>
+            /// The browser new context options
+            /// </summary>
+            internal static readonly BrowserNewContextOptions BrowserNewContextOptions = new BrowserNewContextOptions
+            {
+                UserAgent = UserAgent,
+                RecordVideoDir = AbsoluteAssetsDir,
+                RecordVideoSize = RecordVideoSize
+            };
+            /// <summary>
+            /// The tracing start options
+            /// </summary>
+            internal static readonly TracingStartOptions TracingStartOptions = new TracingStartOptions()
+            {
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true,
+            };
         }
     }
     /// <summary>
-    /// The Playwright object
+    /// <inheritdoc cref="IPlaywright"/>
     /// </summary>
     internal IPlaywright Playwright { get; set; } = null!;
     /// <summary>
-    /// The browser object
+    /// <inheritdoc cref="IBrowser"/>
     /// </summary>
     internal IBrowser Browser { get; set; } = null!;
     /// <summary>
-    /// The browser context object
+    /// <inheritdoc cref="IBrowserContext"/>
     /// </summary>
     internal IBrowserContext Context { get; set; } = null!;
     /// <summary>
-    /// The page object
+    /// <inheritdoc cref="IPage"/>
     /// </summary>
     internal IPage Page { get; set; } = null!;
     /// <summary>
@@ -102,15 +186,25 @@ public class PageTest
     /// </summary>
     internal TestAppSettings configuration = null!;
     /// <summary>
-    /// Whether or not to run the browser in headless mode
+    /// <inheritdoc cref="BrowserTypeLaunchOptions.Headless"/>
     /// </summary>
-    internal bool Headless => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(Headless).ToUpper()));
+    internal static bool Headless => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(Headless).ToUpper()));
     /// <summary>
-    /// The absolute path to the assets directory
+    /// <inheritdoc cref="BrowserTypeLaunchOptions.Devtools"/>
     /// </summary>
-    internal string AbsoluteAssetsDir
+    internal static bool DevTools => string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(DevTools).ToUpper()));
+    /// <summary>
+    /// <inheritdoc cref="Assembly.Location"/>
+    /// <br/>
+    /// <inheritdoc cref="PageConsts.Browser.AssetsDir"/>
+    /// </summary>
+    /// <inheritdoc cref="PageConsts.Browser.AssetsDir"/>
+    /// <inheritdoc cref="Assembly.Location"/>
+    /// <inheritdoc cref="Path.Combine"/>
+    /// <inheritdoc cref="Path.GetDirectoryName"/>
+    internal static string AbsoluteAssetsDir
     {
-        get => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, PageConsts.Browser.AssetsDir);
+        get => Path.Combine(Path.GetDirectoryName(Assembly.Location) ?? string.Empty, PageConsts.Browser.AssetsDir);
     }
     /// <summary>
     /// Setup the test
@@ -119,22 +213,13 @@ public class PageTest
     [SetUp]
     public async Task BaseSetup()
     {
+        WindowHelper.GetScreenDimensionsAndPosition();
         Playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-        Browser = await Playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions { Headless = Headless });
-        Context = await Browser.NewContextAsync(new BrowserNewContextOptions
-        {
-            UserAgent = PageConsts.Browser.UserAgent,
-            RecordVideoDir = AbsoluteAssetsDir,
-            RecordVideoSize = new RecordVideoSize { Width = 1280, Height = 720 }
-        });
-        // Start tracing before creating / navigating a page.
-        await Context.Tracing.StartAsync(new()
-        {
-            Screenshots = true,
-            Snapshots = true,
-            Sources = true,
-        });
+        Browser = await Playwright.Chromium.LaunchAsync(PageConsts.Browser.BrowserTypeLaunchOptions);
+        Context = await Browser.NewContextAsync(PageConsts.Browser.BrowserNewContextOptions);
+        await Context.Tracing.StartAsync(PageConsts.Browser.TracingStartOptions);
         Page = await Context.NewPageAsync();
+        await Page.SetViewportSizeAsync(WindowHelper.CurrentHorizontalResolution, WindowHelper.CurrentVerticalResolution);
     }
     /// <summary>
     /// Tear down the test
@@ -143,29 +228,27 @@ public class PageTest
     [TearDown]
     public async Task BaseTearDown()
     {
-        // Get video file path with name from the page object before we close the context, otherwise the video file name won't be in the Page.Video object
         var videoPath = _getVideoAbsolutePath();
 
         try
         {
-            //  verify theres no other loading activity
-            await Page.WaitForLoadStateAsync(LoadState.Load, PageConsts.Browser.TeardownPageWaitForLoadStateOptions);
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, PageConsts.Browser.TeardownPageWaitForLoadStateOptions);
-            await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded, PageConsts.Browser.TeardownPageWaitForLoadStateOptions);
+            if (!Page.IsClosed) await Page.WaitForLoadStateAsync();
         }
         catch (Exception ex)
         {
-            // Handle or log the exception as appropriate
-            Console.WriteLine($"Error waiting for load state: {ex.Message}");
+            Console.WriteLine(string.Format(PageConsts.Browser.WaitForLoadStateErrorMessageTemplate, ex.Message));
         }
 
         // Get filename without extension
-        var tracingFilename = string.Format(PageConsts.Browser.TraceFileTypeTemplate, Path.Combine(Path.GetFileNameWithoutExtension(videoPath)));
-
+        var traceFileName = string.IsNullOrWhiteSpace(videoPath) ? Guid.NewGuid().ToString("N") : Path.GetFileNameWithoutExtension(videoPath);
+        var absoluteTraceFilePath = string.Format(PageConsts.Browser.TraceFileTypeTemplate,
+                                                    AbsoluteAssetsDir,
+                                                    Path.DirectorySeparatorChar,
+                                                    traceFileName);
         // Stop tracing and export it into a zip archive.
-        await Context.Tracing.StopAsync(new()
+        await Context.Tracing.StopAsync(new TracingStopOptions()
         {
-            Path = tracingFilename
+            Path = absoluteTraceFilePath
         });
 
         // If we close the context before we get the video name it will be null and not tied to allure report test
@@ -178,16 +261,16 @@ public class PageTest
         // var videoPath = Page.Video.Path;
 
         // Add the video to the allure report, must be done after the context is closed, otherwise the video file will be locked.
-        AllureLifecycle.Instance.AddAttachment(TestContext.CurrentContext.Test.MethodName ?? string.Empty, PageConsts.Browser.VideoType, videoPath);
+        if (videoPath != null) AllureLifecycle.Instance.AddAttachment(TestContext.CurrentContext.Test.MethodName ?? string.Empty, PageConsts.Browser.VideoType, videoPath);
         // Add the tracing to the allure report
-        AllureLifecycle.Instance.AddAttachment(TestContext.CurrentContext.Test.MethodName ?? string.Empty, PageConsts.Browser.TracingType, tracingFilename);
+        AllureLifecycle.Instance.AddAttachment(TestContext.CurrentContext.Test.MethodName ?? string.Empty, PageConsts.Browser.TracingType, absoluteTraceFilePath);
     }
     /// <summary>
-    /// Get the absolute path to the video file
+    /// Get video file path with name from the page object before we close the context, otherwise the video file name won't be in the Page.Video object
     /// </summary>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    private string _getVideoAbsolutePath()
+    private string? _getVideoAbsolutePath()
     {
         // Ensure we have a page object
         if (Page == null) throw new ArgumentNullException(nameof(Page));
@@ -210,13 +293,13 @@ public class PageTest
             var absolutePathProperty = artifactResult?.GetType().GetProperty(PageConsts.VideoReflection.AbsolutePath, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             var absolutePathValue = absolutePathProperty?.GetValue(artifactResult) as string;
 
-            return absolutePathValue ?? string.Empty;
+            return absolutePathValue;
         }
         catch (Exception ex)
         {
             // Handle or log the exception as appropriate
             Console.WriteLine(string.Format(PageConsts.VideoReflection.ErrorMessageTemplate, ex.Message));
-            return string.Empty;  // or rethrow, based on your requirements
+            return null;  // or rethrow, based on your requirements
         }
     }
     /// <summary>

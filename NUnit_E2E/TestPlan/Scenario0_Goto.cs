@@ -1,12 +1,11 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Allure.Attributes;
 using NUnit.Framework;
-using System;
 using System.Collections;
 
-namespace NUnit_E2E.TestSuitScenarios
+namespace NUnit_E2E.TestPlan
 {
-    public partial class Goto : PageTest
+    public class Scenario0 : Tests
     {
         internal static IEnumerable TestCasesVisits
         {
@@ -19,18 +18,15 @@ namespace NUnit_E2E.TestSuitScenarios
         }
 
         [Test]
-        [AllureSubSuite(nameof(GotoAsync))]
-        [AllureTag(nameof(GotoAsync))]
-        [TestCaseSource(typeof(Goto), nameof(TestCasesVisits))]
-        public async Task<string> GotoAsync(string url)
+        [AllureSubSuite(nameof(Scenario0_GotoAsync))]
+        [AllureTag(nameof(Scenario0_GotoAsync))]
+        [TestCaseSource(typeof(Scenario0), nameof(TestCasesVisits))]
+        public async Task<string> Scenario0_GotoAsync(string url)
         {
             // navigate to url
             await Page.GotoAsync(url);
 
-            //  verify theres no other loading activity
-            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-            await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
-            await Page.WaitForLoadStateAsync(LoadState.Load);
+            await Page.WaitForLoadStateAsync();
 
             // return page title for verification
             return await Page.TitleAsync();
