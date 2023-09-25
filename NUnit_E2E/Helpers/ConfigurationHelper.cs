@@ -3,7 +3,7 @@ using NUnit_E2E.Settings;
 
 namespace NUnit_E2E.Helpers
 {
-    public static class ConfigurationHelper
+    public sealed class ConfigurationHelper
     {
         private static TestAppSettings testAppSettings = null!;
         public static TestAppSettings Build()
