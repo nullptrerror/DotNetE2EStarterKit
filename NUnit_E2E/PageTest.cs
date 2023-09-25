@@ -31,12 +31,12 @@ public class PageTest
     /// <summary>
     /// Constants for Page object
     /// </summary>
-    internal static class PageConsts
+    internal sealed class PageConsts
     {
         /// <summary>
         /// Constants for reflection of Page.Video object
         /// </summary>
-        internal static class VideoReflection
+        internal sealed class VideoReflection
         {
             /// <summary>
             /// The name of the _artifactTcs field in Page.Video._artifactTcs
@@ -62,7 +62,7 @@ public class PageTest
         /// <summary>
         /// Constants for Page object
         /// </summary>
-        internal static class Browser
+        internal sealed class Browser
         {
             /// <summary>
             /// The directory name where the files from the test will be saved

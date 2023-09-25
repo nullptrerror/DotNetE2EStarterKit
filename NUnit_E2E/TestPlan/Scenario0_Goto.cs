@@ -5,7 +5,8 @@ using System.Collections;
 
 namespace NUnit_E2E.TestPlan
 {
-    public class Scenario0 : Tests
+    [AllureSuite(nameof(TestPlan))]
+    public sealed class Scenario0 : PageTest
     {
         internal static IEnumerable TestCasesVisits
         {

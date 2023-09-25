@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace NUnit_E2E.TestPlan
 {
-    public partial class Scenario3 : PageTest
+    [AllureSuite(nameof(TestPlan))]
+    public sealed class Scenario3 : PageTest
     {
         [Test]
         [AllureSubSuite(nameof(Scenario3_GoogleSearch))]

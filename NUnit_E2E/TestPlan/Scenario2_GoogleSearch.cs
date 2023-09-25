@@ -4,7 +4,8 @@ using NUnit.Framework;
 
 namespace NUnit_E2E.TestPlan
 {
-    public class Scenario2 : PageTest
+    [AllureSuite(nameof(TestPlan))]
+    public sealed class Scenario2 : PageTest
     {
         [Test]
         [AllureSubSuite(nameof(Scenario2_GoogleSearch))]

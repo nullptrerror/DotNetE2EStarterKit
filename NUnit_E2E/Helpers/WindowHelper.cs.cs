@@ -1,6 +1,6 @@
 ﻿namespace NUnit_E2E.Helpers
 {
-    internal static class WindowHelper
+    internal sealed class WindowHelper
     {
         internal const string WindowSizeCommandFormat = "--window-size={0},{1}";
         internal const string WindowPositionCommandFormat = "--window-position={0},{1}";

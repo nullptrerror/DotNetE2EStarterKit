@@ -4,7 +4,8 @@ using NUnit.Framework;
 
 namespace NUnit_E2E.TestPlan
 {
-    public partial class Scenario4 : PageTest
+    [AllureSuite(nameof(TestPlan))]
+    public sealed class Scenario4 : PageTest
     {
         [Test]
         [AllureSubSuite(nameof(Scenario4_TicketMaster))]
