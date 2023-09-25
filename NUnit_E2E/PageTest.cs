@@ -86,7 +86,8 @@ public class PageTest
             /// <inheritdoc cref="PageWaitForLoadStateOptions.Timeout"/>
             /// </summary>
             /// <inheritdoc cref="PageWaitForLoadStateOptions.Timeout"/>
-            internal static readonly PageWaitForLoadStateOptions TeardownPageWaitForLoadStateOptions = new PageWaitForLoadStateOptions() { 
+            internal static readonly PageWaitForLoadStateOptions TeardownPageWaitForLoadStateOptions = new PageWaitForLoadStateOptions()
+            {
                 Timeout = 5000
             };
             /// <summary>
@@ -133,17 +134,13 @@ public class PageTest
             /// <summary>
             /// The record video size
             /// </summary>
-            internal static RecordVideoSize RecordVideoSize {
-                get
+            internal static RecordVideoSize RecordVideoSize
+            {
+                get => new RecordVideoSize()
                 {
-                    var recordVideoSize = new RecordVideoSize()
-                    {
-                        Width = WindowHelper.CurrentHorizontalResolution,
-                        Height = WindowHelper.CurrentVerticalResolution
-                    };
-
-                    return recordVideoSize;
-                }
+                    Width = WindowHelper.CurrentHorizontalResolution,
+                    Height = WindowHelper.CurrentVerticalResolution
+                };
             }
             /// <summary>
             /// The browser new context options
@@ -192,7 +189,7 @@ public class PageTest
     /// <summary>
     /// <inheritdoc cref="BrowserTypeLaunchOptions.Devtools"/>
     /// </summary>
-    internal static bool DevTools => string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(DevTools).ToUpper()));
+    internal static bool DevTools => false; // !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(DevTools).ToUpper()));
     /// <summary>
     /// <inheritdoc cref="Assembly.Location"/>
     /// <br/>
