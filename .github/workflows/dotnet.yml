@@ -17,19 +17,30 @@ jobs:
         with:
           dotnet-version: "6.x.x"
 
+      # Attempt to restore from cache
+      - name: Cache build outputs
+        id: cache-build
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/NUnit_E2E/bin/
+          key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/E2E_TEST.sln', '**/*.csproj', '**/*.cs') }}
+
+      # Only run dotnet restore & build if there was a cache miss
       - name: "[run] dotnet restore"
+        if: steps.cache-build.outputs.cache-hit != 'true'
         run: dotnet restore
 
       - name: "[run] dotnet build --no-restore"
-        run: dotnet build --no-restore\
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: dotnet build --no-restore
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: dotnet_workspace
+          name: github_workspace
           path: ${{ github.workspace }}
     outputs:
-      dotnet_workspace: ${{ github.workspace }}
+      github_workspace: ${{ github.workspace }}
 
   test:
     needs: build # This ensures that the test job will only run after the build job completes successfully
@@ -39,13 +50,13 @@ jobs:
       - name: Download workspace
         uses: actions/download-artifact@v2
         with:
-          name: dotnet_workspace
-          path: ${{ needs.build.outputs.dotnet_workspace }}
+          name: github_workspace
+          path: ${{ needs.build.outputs.github_workspace }}
 
-      - name: List dotnet_workspace contents '${{ needs.build.outputs.dotnet_workspace }}'
+      - name: List dotnet_workspace contents '${{ needs.build.outputs.github_workspace }}'
         if: always()
         run: |
-          ls -al ${{ needs.build.outputs.dotnet_workspace }}
+          ls -al ${{ needs.build.outputs.github_workspace }}
 
       - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
         run: dotnet tool install --global Microsoft.Playwright.CLI
@@ -61,4 +72,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-assets
-          path: ${{ needs.build.outputs.dotnet_workspace }}/NUnit_E2E/bin/Debug/net6.0/assets/
+          path: ${{ needs.build.outputs.github_workspace }}/NUnit_E2E/bin/Debug/net6.0/assets/
