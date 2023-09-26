@@ -66,8 +66,8 @@ jobs:
         run: |
           ls -al ${{ env.NUNIT_TEST_WORKSPACE }}
 
-          - name: Grant permissions for playwright.sh
-          run: chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
+      - name: Grant permissions for playwright.sh
+        run: chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
 
       - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
         run: dotnet tool install --global Microsoft.Playwright.CLI
