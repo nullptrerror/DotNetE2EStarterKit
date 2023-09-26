@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: ["development", "production"]
 
+env:
+  NUNIT_E2E_DEBUG_BIN: ${{ github.workspace }}/NUnit_E2E/bin/Debug/net6.0/
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,7 +25,7 @@ jobs:
         id: cache-build
         uses: actions/cache@v2
         with:
-          path: ${{ github.workspace }}/NUnit_E2E/bin/
+          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}
           key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/E2E_TEST.sln', '**/*.csproj', '**/*.cs') }}
 
       # Only run dotnet restore & build if there was a cache miss
@@ -40,23 +43,31 @@ jobs:
           name: github_workspace
           path: ${{ github.workspace }}
     outputs:
-      github_workspace: ${{ github.workspace }}
+      NUNIT_TEST_WORKSPACE: ${{ github.workspace }}
+      NUNIT_E2E_DEBUG_BIN: ${{ env.NUNIT_E2E_DEBUG_BIN }}
 
   test:
     needs: build # This ensures that the test job will only run after the build job completes successfully
     runs-on: ubuntu-latest
+
+    env:
+      NUNIT_TEST_WORKSPACE: ${{ needs.build.outputs.NUNIT_TEST_WORKSPACE }}
+      NUNIT_E2E_DEBUG_BIN: ${{ needs.build.outputs.NUNIT_E2E_DEBUG_BIN }}
 
     steps:
       - name: Download workspace
         uses: actions/download-artifact@v2
         with:
           name: github_workspace
-          path: ${{ needs.build.outputs.github_workspace }}
+          path: ${{ env.NUNIT_TEST_WORKSPACE }}
 
-      - name: List dotnet_workspace contents '${{ needs.build.outputs.github_workspace }}'
+      - name: List dotnet_workspace contents '${{ env.NUNIT_TEST_WORKSPACE }}'
         if: always()
         run: |
-          ls -al ${{ needs.build.outputs.github_workspace }}
+          ls -al ${{ env.NUNIT_TEST_WORKSPACE }}
+
+          - name: Grant permissions for playwright.sh
+          run: chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
 
       - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
         run: dotnet tool install --global Microsoft.Playwright.CLI
@@ -72,4 +83,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-assets
-          path: ${{ needs.build.outputs.github_workspace }}/NUnit_E2E/bin/Debug/net6.0/assets/
+          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}/Debug/net6.0/assets/
