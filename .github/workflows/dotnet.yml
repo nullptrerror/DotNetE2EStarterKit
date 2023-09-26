@@ -13,20 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.6.0
-        with:
-          path: /home/runner/work
-          
-
-      - name: List root directory contents '$GITHUB_WORKSPACE'
-        if: always()
-        run: |
-          ls -al $GITHUB_WORKSPACE
-
-      - name: echo $GITHUB_WORKSPACE
-        if: always()
-        run: |
-          echo $GITHUB_WORKSPACE
+        uses: actions/checkout@v3.6.0          
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
@@ -49,18 +36,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3.6.0
-        with:
-          path: /home/runner/work
 
       - name: List root directory contents '$GITHUB_WORKSPACE'
         if: always()
         run: |
           ls -al $GITHUB_WORKSPACE
-
-      - name: List root directory contents '$GITHUB_WORKSPACE/DotNetE2EStarterKit'
-        if: always()
-        run: |
-          ls -al $GITHUB_WORKSPACE/DotNetE2EStarterKit
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
@@ -87,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: playwright-videos
-          path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/assets/
+          path: $GITHUB_WORKSPACE/NUnit_E2E/bin/Debug/net6.0/assets/
