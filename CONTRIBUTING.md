@@ -1,10 +1,10 @@
-# Contributing to Selenium + NUnit + Azure DevOps Project
+# Contributing to Playwright + NUnit + DevOps Project
 
 First off, thank you for considering contributing to our project! Your contributions are greatly appreciated and help improve the quality of the project for everyone. This document provides some guidelines and steps for contributing.
 
 ## Code of Conduct
 
-We have a code of conduct in place that we expect all contributors to follow. Please take a moment to read our [Code of Conduct](CODE_OF_CONDUCT.md).
+We don't have one lol, but please be respectful and professional.
 
 ## Getting Started
 
