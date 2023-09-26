@@ -69,8 +69,10 @@ jobs:
       - name: "[run] playwright install"
         run: playwright install
 
-      - name: "[run] dotnet test --no-build"
-        run: dotnet test --no-build
+      - name: "[coactions/setup-dotnet@v1][run] dotnet test --no-build"
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: dotnet test --no-build
 
       - name: "[actions/upload-artifact@v2] Upload the test assets"
         if: always()
