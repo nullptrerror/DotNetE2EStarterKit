@@ -7,9 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: /home/runner/work/
 
     env:
       HEADLESS: "true"
@@ -19,15 +16,15 @@ jobs:
         uses: actions/checkout@v3.6.0
           
 
-      - name: List root directory contents '/home/runner/work/'
+      - name: List root directory contents '$GITHUB_WORKSPACE'
         if: always()
         run: |
-          ls -al /home/runner/work/
+          ls -al $GITHUB_WORKSPACE
 
-      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/'
+      - name: List root directory contents '$GITHUB_WORKSPACE/DotNetE2EStarterKit'
         if: always()
         run: |
-          ls -al /home/runner/work/DotNetE2EStarterKit/
+          ls -al $GITHUB_WORKSPACE/DotNetE2EStarterKit
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
@@ -53,15 +50,15 @@ jobs:
         with:
           path: HEADLESS
 
-      - name: List root directory contents '/home/runner/work/''
+      - name: List root directory contents '$GITHUB_WORKSPACE'
         if: always()
         run: |
-          ls -al /home/runner/work/
+          ls -al $GITHUB_WORKSPACE
 
-      - name: List root directory contents 'home/runner/work/DotNetE2EStarterKit/''
+      - name: List root directory contents '$GITHUB_WORKSPACE/DotNetE2EStarterKit'
         if: always()
         run: |
-          ls -al /home/runner/work/DotNetE2EStarterKit/
+          ls -al $GITHUB_WORKSPACE/DotNetE2EStarterKit
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
