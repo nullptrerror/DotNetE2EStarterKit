@@ -30,10 +30,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download build artifacts
+      - name: Download workspace
         uses: actions/download-artifact@v2
         with:
-          name: build-artifacts
+          name: dotnet_workspace
           path: ${{ needs.build.outputs.dotnet_workspace }}
 
       - name: List dotnet_workspace contents '${{ needs.build.outputs.dotnet_workspace }}'
