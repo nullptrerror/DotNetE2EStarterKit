@@ -15,12 +15,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3.6.0
 
-    - name: Move repo contents to root
-      run: |
-        cp -r '/home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/' '/home/runner/work/DotNetE2EStarterKit/..'
-        rm -r '/home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit'
-        cd '/home/runner/work/DotNetE2EStarterKit/'
-
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3.2.0
       with:
@@ -42,6 +36,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3.6.0
+      with: 
+        path: '/home/runner/work/DotNetE2EStarterKit'
 
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3.2.0
@@ -66,11 +62,11 @@ jobs:
     - name: List root directory contents
       if: always()
       run: |
-        ls -al /home/runner/work/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/
+        ls -al /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/
 
     - name: Upload Playwright Videos
       if: always()
       uses: actions/upload-artifact@v2
       with:
         name: playwright-videos
-        path: /home/runner/work/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/assets/
+        path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/assets/
