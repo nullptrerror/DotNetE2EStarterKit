@@ -2,74 +2,79 @@ name: .NET 6.x.x
 
 on:
   pull_request:
-    branches: [ "development", "production" ]
+    branches: ["development", "production"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     env:
-      HEADLESS: 'true'
-      CHECKOUT_PATH: '/home/runner/work/checkout/DotNetE2EStarterKit/'
+      HEADLESS: "true"
+      CHECKOUT_PATH: "/home/runner/work/checkout/DotNetE2EStarterKit/"
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3.6.0
-      with: 
-        path: HEADLESS
+      - name: Checkout
+        uses: actions/checkout@v3.6.0
+        with:
+          path: HEADLESS
 
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v3.2.0
-      with:
-        dotnet-version: '6.x.x'
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.2.0
+        with:
+          dotnet-version: "6.x.x"
 
-    - name: "[run] dotnet restore"
-      run: dotnet restore
+      - name: "[run] dotnet restore"
+        run: dotnet restore
 
-    - name: "[run] dotnet build --no-restore"
-      run: dotnet build --no-restore
+      - name: "[run] dotnet build --no-restore"
+        run: dotnet build --no-restore
 
   test:
-    needs: build  # This ensures that the test job will only run after the build job completes successfully
+    needs: build # This ensures that the test job will only run after the build job completes successfully
     runs-on: ubuntu-latest
 
     env:
-      HEADLESS: 'true'
+      HEADLESS: "true"
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3.6.0
-      with: 
-        path: HEADLESS
+      - name: Checkout
+        uses: actions/checkout@v3.6.0
+        with:
+          path: HEADLESS
 
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v3.2.0
-      with:
-        dotnet-version: '6.x.x'
+      - name: List root directory contents '/home/runner/work/''
+        if: always()
+        run: |
+          ls -al /home/runner/work/
 
-    - name: "[run] dotnet restore"
-      run: dotnet restore
+      - name: List root directory contents 'home/runner/work/DotNetE2EStarterKit/''
+        if: always()
+        run: |
+          ls -al /home/runner/work/DotNetE2EStarterKit/
 
-    - name: "[run] dotnet build --no-restore"
-      run: dotnet build --no-restore
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.2.0
+        with:
+          dotnet-version: "6.x.x"
 
-    - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
-      run: dotnet tool install --global Microsoft.Playwright.CLI
+      - name: "[run] dotnet restore"
+        run: dotnet restore
 
-    - name: "[run] playwright install"
-      run: playwright install
+      - name: "[run] dotnet build --no-restore"
+        run: dotnet build --no-restore
 
-    - name: "[run] dotnet test --no-build"
-      run: dotnet test --no-build
+      - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
+        run: dotnet tool install --global Microsoft.Playwright.CLI
 
-    - name: List root directory contents
-      if: always()
-      run: |
-        ls -al /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/
+      - name: "[run] playwright install"
+        run: playwright install
 
-    - name: Upload Playwright Videos
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: playwright-videos
-        path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/assets/
+      - name: "[run] dotnet test --no-build"
+        run: dotnet test --no-build
+
+      - name: Upload Playwright Videos
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-videos
+          path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/assets/
