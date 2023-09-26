@@ -18,6 +18,11 @@ jobs:
         with:
           path: HEADLESS
 
+      - name: List root directory contents '/home/runner/work/''
+        if: always()
+        run: |
+          ls -al /home/runner/work/
+
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
         with:
