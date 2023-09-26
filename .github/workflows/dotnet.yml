@@ -7,26 +7,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /home/runner/work/checkout/DotNetE2EStarterKit/
 
     env:
       HEADLESS: "true"
-      CHECKOUT_PATH: "/home/runner/work/checkout/DotNetE2EStarterKit/"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3.6.0
-        with:
-          path: HEADLESS
+          
 
-      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/''
+      - name: List root directory contents '/home/runner/work/'
         if: always()
         run: |
           ls -al /home/runner/work/
 
-      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/''
+      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/checkout/'
         if: always()
         run: |
-          ls -al /home/runner/work/
+          ls -al /home/runner/work/checkout/
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
