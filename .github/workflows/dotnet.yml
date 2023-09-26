@@ -10,12 +10,13 @@ jobs:
 
     env:
       HEADLESS: 'true'
+      CHECKOUT_PATH: '/home/runner/work/checkout/DotNetE2EStarterKit/'
 
     steps:
     - name: Checkout
       uses: actions/checkout@v3.6.0
       with: 
-        path: '/home/runner/work/DotNetE2EStarterKit/'
+        path: HEADLESS
 
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3.2.0
@@ -39,7 +40,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3.6.0
       with: 
-        path: '/home/runner/work/DotNetE2EStarterKit/'
+        path: HEADLESS
 
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3.2.0
