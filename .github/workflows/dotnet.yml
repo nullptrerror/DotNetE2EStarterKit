@@ -21,10 +21,10 @@ jobs:
         run: |
           ls -al $GITHUB_WORKSPACE
 
-      - name: List root directory contents '$GITHUB_WORKSPACE/DotNetE2EStarterKit'
+      - name: echo $GITHUB_WORKSPACE
         if: always()
         run: |
-          ls -al $GITHUB_WORKSPACE/DotNetE2EStarterKit
+          echo $GITHUB_WORKSPACE
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
