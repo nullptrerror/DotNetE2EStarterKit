@@ -12,23 +12,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3.6.0          
+      - name: "[actions/checkout@v3.6.0] Checkout the repository"
+        uses: actions/checkout@v3.6.0
 
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v3.2.0
-        with:
-          dotnet-version: "6.x.x"
-
-      # Attempt to restore from cache
-      - name: Cache build outputs
+      - name: "[actions/cache@v2] Grabs a cache of the .NET build output to speed up builds"
         id: cache-build
         uses: actions/cache@v2
         with:
           path: ${{ env.NUNIT_E2E_DEBUG_BIN }}
           key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/E2E_TEST.sln', '**/*.csproj', '**/*.cs') }}
 
-      # Only run dotnet restore & build if there was a cache miss
       - name: "[run] dotnet restore"
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: dotnet restore
@@ -37,14 +30,13 @@ jobs:
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: dotnet build --no-restore
 
-      - name: Upload build artifacts
+      - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
         uses: actions/upload-artifact@v2
         with:
           name: github_workspace
           path: ${{ github.workspace }}
     outputs:
       NUNIT_TEST_WORKSPACE: ${{ github.workspace }}
-      NUNIT_E2E_DEBUG_BIN: ${{ env.NUNIT_E2E_DEBUG_BIN }}
 
   test:
     needs: build # This ensures that the test job will only run after the build job completes successfully
@@ -52,22 +44,24 @@ jobs:
 
     env:
       NUNIT_TEST_WORKSPACE: ${{ needs.build.outputs.NUNIT_TEST_WORKSPACE }}
-      NUNIT_E2E_DEBUG_BIN: ${{ needs.build.outputs.NUNIT_E2E_DEBUG_BIN }}
 
     steps:
-      - name: Download workspace
+      - name: "[actions/download-artifact@v2] Download the workspace from the build job"
         uses: actions/download-artifact@v2
         with:
           name: github_workspace
           path: ${{ env.NUNIT_TEST_WORKSPACE }}
 
-      - name: List dotnet_workspace contents '${{ env.NUNIT_TEST_WORKSPACE }}'
+      - name: List directory contents
         if: always()
         run: |
           ls -al ${{ env.NUNIT_TEST_WORKSPACE }}
+          ls -al ${{ env.NUNIT_E2E_DEBUG_BIN }}
 
-      - name: Grant permissions for playwright.sh
-        run: chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
+      - name: "[run] chmod +x on playwright.sh and node"
+        run: |
+          chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
+          chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/node
 
       - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
         run: dotnet tool install --global Microsoft.Playwright.CLI
@@ -78,9 +72,9 @@ jobs:
       - name: "[run] dotnet test --no-build"
         run: dotnet test --no-build
 
-      - name: Upload Test Assets
+      - name: "[actions/upload-artifact@v2] Upload the test assets"
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: test-assets
-          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}/Debug/net6.0/assets/
+          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}assets/
