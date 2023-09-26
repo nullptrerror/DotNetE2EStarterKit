@@ -18,7 +18,12 @@ jobs:
         with:
           path: HEADLESS
 
-      - name: List root directory contents '/home/runner/work/''
+      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/''
+        if: always()
+        run: |
+          ls -al /home/runner/work/
+
+      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/''
         if: always()
         run: |
           ls -al /home/runner/work/
