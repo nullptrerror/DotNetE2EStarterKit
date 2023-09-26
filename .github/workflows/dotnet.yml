@@ -24,10 +24,10 @@ jobs:
         run: |
           ls -al /home/runner/work/
 
-      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/checkout/'
+      - name: List root directory contents '/home/runner/work/DotNetE2EStarterKit/'
         if: always()
         run: |
-          ls -al /home/runner/work/checkout/
+          ls -al /home/runner/work/DotNetE2EStarterKit/
 
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v3.2.0
