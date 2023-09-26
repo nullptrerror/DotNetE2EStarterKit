@@ -14,7 +14,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3.6.0
-    - run: mv /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/ /home/runner/work/DotNetE2EStarterKit/
+    - run: mv '/home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/' '/home/runner/work/DotNetE2EStarterKit/'
 
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3.2.0
