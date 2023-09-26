@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: /home/runner/work/checkout/DotNetE2EStarterKit/
+        working-directory: /home/runner/work/
 
     env:
       HEADLESS: "true"
