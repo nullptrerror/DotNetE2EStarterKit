@@ -21,7 +21,13 @@ jobs:
         run: dotnet restore
 
       - name: "[run] dotnet build --no-restore"
-        run: dotnet build --no-restore
+        run: dotnet build --no-restore\
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dotnet_workspace
+          path: ${{ github.workspace }}
     outputs:
       dotnet_workspace: ${{ github.workspace }}
 
@@ -55,4 +61,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-assets
-          path: ${{ github.workspace }}/NUnit_E2E/bin/Debug/net6.0/assets/
+          path: ${{ needs.build.outputs.dotnet_workspace }}/NUnit_E2E/bin/Debug/net6.0/assets/
