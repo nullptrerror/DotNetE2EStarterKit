@@ -17,8 +17,9 @@ jobs:
 
     - name: Move repo contents to root
       run: |
-        cp -r '/home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/' '/home/runner/work/DotNetE2EStarterKit/..'
+        cp -r '/home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/' '/home/runner/work/DotNetE2EStarterKit/'
         rm -r '/home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit'
+        cd '/home/runner/work/DotNetE2EStarterKit/'
 
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v3.2.0
