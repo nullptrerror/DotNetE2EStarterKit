@@ -8,9 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      HEADLESS: "true"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3.6.0          
@@ -25,33 +22,18 @@ jobs:
 
       - name: "[run] dotnet build --no-restore"
         run: dotnet build --no-restore
+    outputs:
+      dotnet_workspace: ${{ github.workspace }}
 
   test:
     needs: build # This ensures that the test job will only run after the build job completes successfully
     runs-on: ubuntu-latest
 
-    env:
-      HEADLESS: "true"
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3.6.0
-
-      - name: List root directory contents '$GITHUB_WORKSPACE'
+      - name: List dotnet_workspace contents '${{ needs.build.outputs.dotnet_workspace }}'
         if: always()
         run: |
-          ls -al $GITHUB_WORKSPACE
-
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v3.2.0
-        with:
-          dotnet-version: "6.x.x"
-
-      - name: "[run] dotnet restore"
-        run: dotnet restore
-
-      - name: "[run] dotnet build --no-restore"
-        run: dotnet build --no-restore
+          ls -al ${{ needs.build.outputs.dotnet_workspace }}
 
       - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
         run: dotnet tool install --global Microsoft.Playwright.CLI
@@ -62,9 +44,9 @@ jobs:
       - name: "[run] dotnet test --no-build"
         run: dotnet test --no-build
 
-      - name: Upload Playwright Videos
+      - name: Upload Test Assets
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: playwright-videos
-          path: $GITHUB_WORKSPACE/NUnit_E2E/bin/Debug/net6.0/assets/
+          name: test-assets
+          path: ${{ github.workspace }}/NUnit_E2E/bin/Debug/net6.0/assets/
