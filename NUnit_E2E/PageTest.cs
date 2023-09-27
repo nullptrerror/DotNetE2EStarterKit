@@ -227,9 +227,13 @@ public class PageTest
         await Browser.CloseAsync();
 
         // Add the video to the allure report, must be done after the context is closed, otherwise the video file will be locked.
-        if (Page.Video != null) AllureLifecycle.Instance.AddAttachment(TestContext.CurrentContext.Test.MethodName ?? string.Empty, PageConsts.Browser.VideoType, absoluteVideoFilePath);
+        if (Page.Video != null) AllureLifecycle.Instance.AddAttachment(string.Concat(PageConsts.Browser.VideoType, " - ", TestContext.CurrentContext.Test.MethodName),
+                                                                        PageConsts.Browser.VideoType,
+                                                                        absoluteVideoFilePath);
         // Add the tracing to the allure report
-        AllureLifecycle.Instance.AddAttachment(TestContext.CurrentContext.Test.MethodName ?? string.Empty, PageConsts.Browser.TracingType, absoluteTraceFilePath);
+        AllureLifecycle.Instance.AddAttachment(string.Concat(PageConsts.Browser.TracingType, " - ", TestContext.CurrentContext.Test.MethodName),
+                                                PageConsts.Browser.TracingType,
+                                                absoluteTraceFilePath);
     }
     /// <summary>
     /// Tear down the test
