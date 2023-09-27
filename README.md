@@ -33,7 +33,21 @@ This README will guide you through setting up your development environment and g
 
 3. **Restore NuGet Packages**: Run `dotnet restore` to restore the NuGet packages.
 
-4. **Build the Project**: Run `dotnet build` to compile the project.
+4. **Cd to NUnit_E2E**: Change directory to the NUnit_E2E project with `cd C:\LocalRepo\DotNetE2EStarterKit\NUnit_E2E`.
+
+5. **Tool Update Powershell**: Run `dotnet tool update --global PowerShell` to update the PowerShell tool.
+
+6. **Install Required Browsers**: Run `pwsh bin/Debug/net6.0/playwright.ps1 install`
+
+7. **Build the Project**: Run `dotnet build` to compile the project.
+
+#### Playwright Codegen (Optional)
+
+1. **Cd to NUnit_E2E**: Change directory to the NUnit_E2E project with `cd C:\LocalRepo\DotNetE2EStarterKit\NUnit_E2E`.
+
+2. **Generate Code**: Run `pwsh bin/Debug/net6.0/playwright.ps1 codegen` to generate the code.
+
+3. **If the pwsh command does not work**: Run `dotnet tool update --global PowerShell` to update the PowerShell tool.
 
 ### Running the Tests
 
