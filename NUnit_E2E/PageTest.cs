@@ -185,11 +185,11 @@ public class PageTest
     /// <summary>
     /// <inheritdoc cref="BrowserTypeLaunchOptions.Headless"/>
     /// </summary>
-    internal static bool Headless => !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(Headless).ToUpper()));
+    internal const bool Headless = false; // !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(Headless).ToUpper()));
     /// <summary>
     /// <inheritdoc cref="BrowserTypeLaunchOptions.Devtools"/>
     /// </summary>
-    internal static bool DevTools => false; // !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(DevTools).ToUpper()));
+    internal const bool DevTools = false; // !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(nameof(DevTools).ToUpper()));
     /// <summary>
     /// <inheritdoc cref="Assembly.Location"/>
     /// <br/>
