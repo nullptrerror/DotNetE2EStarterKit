@@ -69,7 +69,7 @@ jobs:
       - name: "[run] playwright install"
         run: playwright install
 
-      - name: "[coactions/setup-dotnet@v1][run] dotnet test --no-build"
+      - name: "[coactions/setup-xvfb@v1][run] dotnet test --no-build"
         uses: coactions/setup-xvfb@v1
         with:
           run: dotnet test --no-build
