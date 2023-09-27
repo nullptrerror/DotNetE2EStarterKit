@@ -2,69 +2,81 @@ name: .NET 6.x.x
 
 on:
   pull_request:
-    branches: [ "development", "production" ]
+    branches: ["development", "production"]
+
+env:
+  NUNIT_E2E_DEBUG_BIN: ${{ github.workspace }}/NUnit_E2E/bin/Debug/net6.0/
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      HEADLESS: 'true'
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3.6.0
+      - name: "[actions/checkout@v3.6.0] Checkout the repository"
+        uses: actions/checkout@v3.6.0
 
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v3.2.0
-      with:
-        dotnet-version: '6.x.x'
+      - name: "[actions/cache@v2] Grabs a cache of the .NET build output to speed up builds"
+        id: cache-build
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}
+          key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/E2E_TEST.sln', '**/*.csproj', '**/*.cs') }}
 
-    - name: "[run] dotnet restore"
-      run: dotnet restore
+      - name: "[run] dotnet restore"
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: dotnet restore
 
-    - name: "[run] dotnet build --no-restore"
-      run: dotnet build --no-restore
+      - name: "[run] dotnet build --no-restore"
+        if: steps.cache-build.outputs.cache-hit != 'true'
+        run: dotnet build --no-restore
+
+      - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
+        uses: actions/upload-artifact@v2
+        with:
+          name: github_workspace
+          path: ${{ github.workspace }}
+    outputs:
+      NUNIT_TEST_WORKSPACE: ${{ github.workspace }}
 
   test:
-    needs: build  # This ensures that the test job will only run after the build job completes successfully
+    needs: build # This ensures that the test job will only run after the build job completes successfully
     runs-on: ubuntu-latest
 
     env:
-      HEADLESS: 'true'
+      NUNIT_TEST_WORKSPACE: ${{ needs.build.outputs.NUNIT_TEST_WORKSPACE }}
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3.6.0
+      - name: "[actions/download-artifact@v2] Download the workspace from the build job"
+        uses: actions/download-artifact@v2
+        with:
+          name: github_workspace
+          path: ${{ env.NUNIT_TEST_WORKSPACE }}
 
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v3.2.0
-      with:
-        dotnet-version: '6.x.x'
+      - name: List directory contents
+        if: always()
+        run: |
+          ls -al ${{ env.NUNIT_TEST_WORKSPACE }}
+          ls -al ${{ env.NUNIT_E2E_DEBUG_BIN }}
 
-    - name: "[run] dotnet restore"
-      run: dotnet restore
+      - name: "[run] chmod +x on playwright.sh and node"
+        run: |
+          chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
+          chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/node
 
-    - name: "[run] dotnet build --no-restore"
-      run: dotnet build --no-restore
+      - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
+        run: dotnet tool install --global Microsoft.Playwright.CLI
 
-    - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
-      run: dotnet tool install --global Microsoft.Playwright.CLI
+      - name: "[run] playwright install"
+        run: playwright install
 
-    - name: "[run] playwright install"
-      run: playwright install
+      - name: "[coactions/setup-dotnet@v1][run] dotnet test --no-build"
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: dotnet test --no-build
 
-    - name: "[run] dotnet test --no-build"
-      run: dotnet test --no-build
-
-    - name: List root directory contents
-      if: always()
-      run: |
-        ls -al /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/
-
-    - name: Upload Playwright Videos
-      if: always()
-      uses: actions/upload-artifact@v2
-      with:
-        name: playwright-videos
-        path: /home/runner/work/DotNetE2EStarterKit/DotNetE2EStarterKit/NUnit_E2E/bin/Debug/net6.0/videos/
+      - name: "[actions/upload-artifact@v2] Upload the test assets"
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-assets
+          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}assets/
