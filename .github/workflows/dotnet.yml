@@ -33,7 +33,7 @@ jobs:
       - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
         uses: actions/upload-artifact@v2
         with:
-          name: github_workspace
+          name: nunit-test-workspace
           path: ${{ github.workspace }}
     outputs:
       NUNIT_TEST_WORKSPACE: ${{ github.workspace }}
@@ -49,7 +49,7 @@ jobs:
       - name: "[actions/download-artifact@v2] Download the workspace from the build job"
         uses: actions/download-artifact@v2
         with:
-          name: github_workspace
+          name: nunit-test-workspace
           path: ${{ env.NUNIT_TEST_WORKSPACE }}
 
       - name: List directory contents
@@ -78,5 +78,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: test-assets
+          name: nunit-e2e-debug-bin
           path: ${{ env.NUNIT_E2E_DEBUG_BIN }}
