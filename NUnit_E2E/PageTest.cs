@@ -17,14 +17,6 @@ namespace NUnit_E2E;
 public class PageTest
 {
     /// <summary>
-    /// <inheritdoc cref="System.Reflection.Assembly"/>
-    /// <br/>
-    /// <inheritdoc cref="Assembly.GetExecutingAssembly"/>
-    /// </summary>
-    /// <inheritdoc cref="System.Reflection.Assembly"/>
-    /// <inheritdoc cref="Assembly.GetExecutingAssembly"/>
-    internal static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
-    /// <summary>
     /// The name of the root suite
     /// </summary>
     internal const string AllureSuite = "Root Suite";
@@ -65,14 +57,6 @@ public class PageTest
                 Timeout = 5000
             };
             /// <summary>
-            /// <inheritdoc cref="Assembly.Location"/>
-            /// <br/>
-            /// <inheritdoc cref="Path.GetDirectoryName(string)"/>
-            /// </summary>
-            /// <inheritdoc cref="Assembly.Location"/>
-            /// <inheritdoc cref="Path.GetDirectoryName(string)"/>
-            internal static readonly string? GetExecutingAssemblyDirectoryName = Path.GetDirectoryName(Assembly.Location);
-            /// <summary>
             /// The user agent to use for the browser
             /// </summary>
             internal const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
@@ -100,8 +84,8 @@ public class PageTest
                 Headless = Headless,
                 Devtools = DevTools,
                 Args = BrowserTypeLaunchOptionsArgs,
-                DownloadsPath = Path.Combine(GetExecutingAssemblyDirectoryName ?? throw new ArgumentNullException(nameof(GetExecutingAssemblyDirectoryName)), AssetsDir),
-                TracesDir = Path.Combine(GetExecutingAssemblyDirectoryName ?? throw new ArgumentNullException(nameof(GetExecutingAssemblyDirectoryName)), AssetsDir),
+                DownloadsPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, AssetsDir),
+                TracesDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, AssetsDir),
                 // SlowMo = 100,
                 // Timeout = 10000,
             };
@@ -175,7 +159,7 @@ public class PageTest
     /// <inheritdoc cref="Path.GetDirectoryName"/>
     internal static string AbsoluteAssetsDir
     {
-        get => Path.Combine(Path.GetDirectoryName(Assembly.Location) ?? string.Empty, PageConsts.Browser.AssetsDir);
+        get => Path.Combine(TestContext.CurrentContext.WorkDirectory, PageConsts.Browser.AssetsDir);
     }
     /// <summary>
     /// Setup the test
