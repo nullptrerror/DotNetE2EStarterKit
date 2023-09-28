@@ -41,7 +41,11 @@ public class PageTest
             /// <summary>
             /// The template for the trace file name
             /// </summary>
-            internal const string TraceFileTypeTemplate = "{0}{1}{2}.playwright.trace.zip";
+            internal const string TraceFileExtension = ".playwright.trace.zip";
+            /// <summary>
+            /// The template for the trace file name
+            /// </summary>
+            internal const string VideoFileExtension = ".playwright.video.webm";
             /// <summary>
             /// The error message template for when the page cannot be closed
             /// </summary>
@@ -183,6 +187,7 @@ public class PageTest
     [TearDown]
     public async Task BaseTearDown()
     {
+        // Wait for the page to finish loading
         try
         {
             if (!Page.IsClosed) await Page.WaitForLoadStateAsync(LoadState.NetworkIdle, PageConsts.Browser.TeardownPageWaitForLoadStateOptions);
@@ -191,33 +196,43 @@ public class PageTest
         {
             Console.WriteLine(string.Format(PageConsts.Browser.WaitForLoadStateErrorMessageTemplate, ex.Message));
         }
-
-        var absoluteVideoFilePath = Page.Video != null ? await Page.Video.PathAsync() : string.Empty;
-        var commonFileName = Page.Video != null
-                                ? Path.GetFileNameWithoutExtension(absoluteVideoFilePath)
-                                : Guid.NewGuid().ToString("N");
-        var absoluteTraceFilePath = string.Format(PageConsts.Browser.TraceFileTypeTemplate,
-                                                    AbsoluteAssetsDir,
+        // Generate a common file name for the trace and video files
+        var commonFileName = Guid.NewGuid().ToString("N");
+        // Get the absolute path for the trace and video files
+        var absoluteTraceFilePath = string.Concat(AbsoluteAssetsDir,
                                                     Path.DirectorySeparatorChar,
-                                                    commonFileName);
+                                                    commonFileName,
+                                                    PageConsts.Browser.TraceFileExtension);
+        var absoluteVideoFilePath = string.Concat(AbsoluteAssetsDir,
+                                                    Path.DirectorySeparatorChar,
+                                                    commonFileName,
+                                                    PageConsts.Browser.VideoFileExtension);
         // Stop tracing and export it into a zip archive.
         await Context.Tracing.StopAsync(new TracingStopOptions()
         {
             Path = absoluteTraceFilePath
         });
 
-        // If we close the context before we get the video name it will be null and not tied to allure report test
+        // Close and clean up the browser and context
         await Context.CloseAsync();
         await Browser.CloseAsync();
 
-        // Add the video to the allure report, must be done after the context is closed, otherwise the video file will be locked.
-        if (Page.Video != null) AllureLifecycle.Instance.AddAttachment(string.Concat(PageConsts.Browser.VideoType, " - ", TestContext.CurrentContext.Test.MethodName),
-                                                                        PageConsts.Browser.VideoType,
-                                                                        absoluteVideoFilePath);
         // Add the tracing to the allure report
-        AllureLifecycle.Instance.AddAttachment(string.Concat(PageConsts.Browser.TracingType, " - ", TestContext.CurrentContext.Test.MethodName),
-                                                PageConsts.Browser.TracingType,
-                                                absoluteTraceFilePath);
+        AllureLifecycle.Instance.AddAttachment(string.Concat(
+                PageConsts.Browser.TracingType, " - ", TestContext.CurrentContext.Test.MethodName),
+                PageConsts.Browser.TracingType,
+            absoluteTraceFilePath);
+
+        if (Page?.Video != null)
+        {
+            // Rename the video file to match the test name
+            File.Move(await Page.Video.PathAsync(), absoluteVideoFilePath);
+
+            AllureLifecycle.Instance.AddAttachment(string.Concat(
+                PageConsts.Browser.VideoType, " - ", TestContext.CurrentContext.Test.MethodName),
+                PageConsts.Browser.VideoType,
+            absoluteVideoFilePath);
+        }
     }
     /// <summary>
     /// Tear down the test
