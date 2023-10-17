@@ -28,18 +28,6 @@ jobs:
           dotnet publish NUnit_E2E/NUnit_E2E.csproj --configuration Release --output ${{ env.NUNIT_E2E_BIN }}
           cd ${{ env.NUNIT_E2E_BIN }}
           zip -r nunit-e2e-bin.zip .
-      # If cache exists, unzip the output to the desired location
-      - name: "[run] Unzip binaries"
-        if: steps.cache-zip.outputs.cache-hit == 'true'
-        run: |
-          cd ${{ env.NUNIT_E2E_BIN }}
-          unzip nunit-e2e-bin.zip
-      - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
-        if: steps.cache-build.outputs.cache-hit != 'true'
-        uses: actions/upload-artifact@v2
-        with:
-          name: nunit-e2e-bin-zipped
-          path: ${{ env.NUNIT_E2E_BIN }}/nunit-e2e-bin.zip
 
   test:
     needs: build # This ensures that the test job will only run after the build job completes successfully
@@ -47,14 +35,14 @@ jobs:
 
     steps:
       - name: "[actions/cache@v2] Grabs a cache of the .NET build output zip to speed up builds"
-        id: cache-zip
+        id: cache-zip-test
         uses: actions/cache@v2
         with:
           path: ${{ env.NUNIT_E2E_BIN }}/nunit-e2e-bin.zip
           key: ${{ runner.os }}-dotnet-build-zip-${{ hashFiles('**/QA_AUTOMATED_TEST.sln', '**/*.csproj', '**/*.cs') }}
 
       - name: "[run] Unzip binaries"
-        if: steps.cache-zip.outputs.cache-hit == 'true'
+        if: steps.cache-zip-test.outputs.cache-hit == 'true'
         run: |
           cd ${{ env.NUNIT_E2E_BIN }}
           unzip nunit-e2e-bin.zip
