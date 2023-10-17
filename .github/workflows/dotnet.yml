@@ -29,7 +29,8 @@ jobs:
       - name: "[run] Zip binaries"
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: |
-          zip -r ${{ env.NUNIT_E2E_BIN }}/nunit-e2e-bin.zip ${{ env.NUNIT_E2E_BIN }}
+            cd ${{ env.NUNIT_E2E_BIN }}
+            zip -r nunit-e2e-bin.zip .
 
       - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
         if: steps.cache-build.outputs.cache-hit != 'true'
