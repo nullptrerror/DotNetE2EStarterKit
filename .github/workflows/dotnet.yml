@@ -5,7 +5,7 @@ on:
     branches: ["development", "production"]
 
 env:
-  NUNIT_E2E_DEBUG_BIN: ${{ github.workspace }}/NUnit_E2E/bin/Debug/net6.0/
+  NUNIT_E2E_BIN: ${{ github.workspace }}/NUnit_E2E/bin/Release/net6.0/
 
 jobs:
   build:
@@ -19,49 +19,39 @@ jobs:
         id: cache-build
         uses: actions/cache@v2
         with:
-          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}
-          key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/E2E_TEST.sln', '**/*.csproj', '**/*.cs') }}
+          path: ${{ github.workspace }}
+          key: ${{ runner.os }}-dotnet-build-${{ hashFiles('**/QA_AUTOMATED_TEST.sln', '**/*.csproj', '**/*.cs') }}
 
-      - name: "[run] dotnet restore"
+      - name: "[run] dotnet publish"
         if: steps.cache-build.outputs.cache-hit != 'true'
-        run: dotnet restore
-
-      - name: "[run] dotnet build --no-restore"
-        if: steps.cache-build.outputs.cache-hit != 'true'
-        run: dotnet build --no-restore
+        run: dotnet publish NUnit_E2E/NUnit_E2E.csproj --configuration Release --output ${{ env.NUNIT_E2E_BIN }}
 
       - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
         uses: actions/upload-artifact@v2
         with:
-          name: nunit-test-workspace
-          path: ${{ github.workspace }}
-    outputs:
-      NUNIT_TEST_WORKSPACE: ${{ github.workspace }}
+          name: nunit-e2e-bin
+          path: ${{ env.NUNIT_E2E_BIN }}
 
   test:
     needs: build # This ensures that the test job will only run after the build job completes successfully
     runs-on: ubuntu-latest
 
-    env:
-      NUNIT_TEST_WORKSPACE: ${{ needs.build.outputs.NUNIT_TEST_WORKSPACE }}
-
     steps:
       - name: "[actions/download-artifact@v2] Download the workspace from the build job"
         uses: actions/download-artifact@v2
         with:
-          name: nunit-test-workspace
-          path: ${{ env.NUNIT_TEST_WORKSPACE }}
+          name: nunit-e2e-bin
+          path: ${{ env.NUNIT_E2E_BIN }}
 
       - name: List directory contents
         if: always()
         run: |
-          ls -al ${{ env.NUNIT_TEST_WORKSPACE }}
-          ls -al ${{ env.NUNIT_E2E_DEBUG_BIN }}
+          ls -al ${{ env.NUNIT_E2E_BIN }}
 
       - name: "[run] chmod +x on playwright.sh and node"
         run: |
-          chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/playwright.sh
-          chmod +x ${{ env.NUNIT_E2E_DEBUG_BIN }}.playwright/node/linux-x64/node
+          chmod +x ${{ env.NUNIT_E2E_BIN }}.playwright/node/linux-x64/playwright.sh
+          chmod +x ${{ env.NUNIT_E2E_BIN }}.playwright/node/linux-x64/node
 
       - name: "[run] dotnet tool install --global Microsoft.Playwright.CLI"
         run: dotnet tool install --global Microsoft.Playwright.CLI
@@ -78,5 +68,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: nunit-e2e-debug-bin
-          path: ${{ env.NUNIT_E2E_DEBUG_BIN }}
+          name: nunit-e2e-bin-assets
+          path: ${{ env.NUNIT_E2E_BIN }}/assets
