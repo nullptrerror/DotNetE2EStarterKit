@@ -65,7 +65,7 @@ jobs:
       - name: "[coactions/setup-xvfb@v1][run] dotnet test --no-build"
         uses: coactions/setup-xvfb@v1
         with:
-          run: dotnet test --no-build
+          run: dotnet test ${{ env.NUNIT_E2E_BIN }}NUnit_E2E.dll --no-build 
 
       - name: "[run] Zip assets"
         if: always()
