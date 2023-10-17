@@ -42,7 +42,6 @@ jobs:
           key: ${{ runner.os }}-dotnet-build-zip-${{ hashFiles('**/QA_AUTOMATED_TEST.sln', '**/*.csproj', '**/*.cs') }}
 
       - name: "[run] Unzip binaries"
-        if: steps.cache-zip-test.outputs.cache-hit == 'true'
         run: |
           cd ${{ env.NUNIT_E2E_BIN }}
           unzip nunit-e2e-bin.zip
