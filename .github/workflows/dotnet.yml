@@ -27,6 +27,7 @@ jobs:
         run: dotnet publish NUnit_E2E/NUnit_E2E.csproj --configuration Release --output ${{ env.NUNIT_E2E_BIN }}
 
       - name: "[actions/upload-artifact@v2] Upload the workspace to be used in the test job"
+        if: steps.cache-build.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v2
         with:
           name: nunit-e2e-bin
