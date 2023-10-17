@@ -57,7 +57,7 @@ jobs:
         run: dotnet tool install --global Microsoft.Playwright.CLI
 
       - name: "[run] playwright install"
-        run: playwright install
+        run: ${{ env.NUNIT_E2E_BIN }}playwright install
 
       - name: "[coactions/setup-xvfb@v1][run] dotnet test --no-build"
         uses: coactions/setup-xvfb@v1
