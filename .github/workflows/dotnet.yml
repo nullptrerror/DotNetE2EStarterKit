@@ -67,15 +67,9 @@ jobs:
         with:
           run: dotnet test ${{ env.NUNIT_E2E_BIN }}NUnit_E2E.dll --no-build 
 
-      - name: "[run] Zip assets"
-        if: always()
-        run: |
-          cd ${{ env.NUNIT_E2E_BIN }}assets/
-          zip -r nunit-e2e-bin-assets.zip .
-
       - name: "[actions/upload-artifact@v2] Upload the test assets"
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: nunit-e2e-bin-assets-zipped
-          path: ${{ env.NUNIT_E2E_BIN }}assets/nunit-e2e-bin-assets.zip
+          path: ${{ env.NUNIT_E2E_BIN }}assets/
